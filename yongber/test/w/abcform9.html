@@ -1,0 +1,163 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>abcform9</title>
+<style type="text/css">
+body{ background-color:#333; color:#FFF;}
+#main{ border:1px solid #FFF; width:1000px; position:absolute; top:5%; left:30%; text-align:center; font-size:18px;}
+#adddate{ text-align:right; padding-right:30px;}
+#title{ float:left; padding-left:80px;}
+#title1{ float:left;}
+#number{ float:right; padding-right:180px; width:200px; text-align:left;}
+#number1{ float:right;}
+#pnm{ float:left; padding-left:80px;}
+#pnm1{ float:left;}
+#fabric{ float:left; padding-left:80px;}
+#fabric1{ float:left;}
+#gotime{ float:right; padding-right:145px; width:200px; text-align:left;}
+#gotime1{ float:right;}
+</style>
+<script type="text/javascript">
+window.onload = function(){
+	var test = window.location.href;
+	var array = test.split("/");
+	var form = array[array.length-1].split(".")[0];
+	var complate = document.getElementById("complate");
+	var xhr = new XMLHttpRequest();
+		xhr.open("POST","../getcomplate.php",true);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded;charset=UTF-8");
+		xhr.send("form=" + form);
+		xhr.onreadystatechange = function(){
+				if(xhr.readyState == 4 && xhr.status == 200){
+					if(xhr.responseText == 1){
+						complate.innerHTML = "已完成";
+					}else if(xhr.responseText == 0){
+						complate.innerHTML = "未完成";
+					}
+				}
+		}
+}
+function changecomplate(){
+	var e = window.confirm("确定要修改订单完成情况吗？");
+	if(e == true){
+	var test = window.location.href;
+	var array = test.split("/");
+	var form = array[array.length-1].split(".")[0];
+	var complate = document.getElementById("complate");
+	var complatevalue = complate.innerHTML;
+	var xhr = new XMLHttpRequest();
+		xhr.open("POST","../changecomplate.php",true);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded;charset=UTF-8");
+		xhr.send("form=" + form +"&complate=" + complatevalue);
+		xhr.onreadystatechange = function(){
+				if(xhr.readyState == 4 && xhr.status == 200){
+					if(xhr.responseText == 1){
+						complate.innerHTML = "已完成";
+					}else if(xhr.responseText == 0){
+						complate.innerHTML = "未完成";
+					}
+				}
+		};
+	}
+}
+</script>
+</head>
+
+<body>
+<div id="main">
+<h1>小吕</h1>
+<div id="adddate"><span style="float:left; padding-left:80px; cursor:pointer;" id="complate" onclick = "changecomplate();" onMouseOver="this.style.color = 'red'"  onMouseOut="this.style.color='white'">未完成</span>下单日期：<span>2020-01-03</span></div>
+<hr/>
+<div style="height:30px;">
+<span id="title">款号：</span><span id="title1">0123</span><span id="number">123</span><span id="number1">数量：</span>
+</div>
+<hr/>
+<div style="height:30px;">
+<p><span id="pnm">品号：</span><span id="pnm1">01外套</span></p>
+</div>
+<hr/>
+<div style="height:30px;">
+<p><span id="fabric">面料：</span><span id="fabric1">化纤</span><span id="gotime">2020-01-17</span><span id="gotime1">出货时间：</span></p>
+</div>
+<hr/>
+<div>
+<table width="1000">
+<thead>
+          <tr>
+          		<th>颜色</th>
+                <th>尺码</th>
+                <th>合计</th>
+          </tr>
+           <td><hr/></td>
+          <td><hr/></td>
+          <td><hr/></td>
+</thead>
+<tbody>
+			<tr>
+          		<td>绿色</td>
+                <td>x</td>
+                <td>123</td>
+          	</tr>
+			<td><hr/></td>
+          	<td><hr/></td>
+          	<td><hr/></td><tr>
+          		<td><b>合计</b></td>
+                <td></td>
+                <td><b>123</b></td>
+          	</tr>
+			<td><hr/></td>
+          	<td><hr/></td>
+          	<td><hr/></td>
+</tbody>
+<tfoot>
+ 		  <tr>
+          		<th>合计</th>
+                <th></th>
+                <th>123</th>
+          </tr>
+</tfoot>
+</table>
+<hr/>
+</div>
+<div>
+<table width="1000">
+<thead>
+          <tr>
+          		<th>尺码</th>
+                <th>颜色</th>
+                <th>合计</th>
+          </tr>
+          <td><hr/></td>
+          <td><hr/></td>
+          <td><hr/></td>  
+</thead>
+<tbody>
+			<tr>
+          		<td>x</td>
+                <td>绿色</td>
+                <td>123</td>
+          	</tr>
+			<td><hr/></td>
+          	<td><hr/></td>
+          	<td><hr/></td><tr>
+          		<td><b>合计</b></td>
+                <td></td>
+                <td><b>123</b></td>
+          	</tr>
+			<td><hr/></td>
+          	<td><hr/></td>
+          	<td><hr/></td>
+</tbody>
+<tfoot>
+ 		  <tr>
+          		<th>合计</th>
+                <th></th>
+                <th>123</th>
+          </tr>
+</tfoot>
+</table>
+</div>
+</div>
+</body>
+</html>

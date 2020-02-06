@@ -1,0 +1,102 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>填写表单</title>
+<link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<style>
+	label{
+		text-align:right;
+	}
+	body{
+		text-align:center;
+	}
+	form{
+		height:800px;
+	}
+</style>
+</head>
+
+<body>
+	<div style="width:800px;height: 1000px;position: relative;">
+		<div style="width:600px;height: 800px; position: absolute;top: 50%;left: 50%;margin-top: -400px;margin-left: -300px;" class="form-horizontal">
+			<h3>test2</h3>
+			<form role="form" action="update_database.php" method="post">
+				<div class="col-md-12">
+    <div class="form-group">
+        <label class="col-sm-3 control-label">姓名：</label>
+        <div class="col-sm-8">
+            <input type="text" class="form-control " placeholder="请输入你的姓名" name="姓名">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">身份证：</label>
+        <div class="col-sm-8">
+            <input type="text" class="form-control" placeholder="请输入你的身份证" name="身份证">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">电话：</label>
+        <div class="col-sm-8">
+            <input type="text" class="form-control" placeholder="请输入你的电话" name="电话">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">个人网站：</label>
+        <div class="col-sm-8">
+            <input type="text" class="form-control" placeholder="请输入你的个人网站地址" name="网址">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">职位：</label>
+        <div class="col-sm-8">
+            <input type="text" class="form-control" placeholder="请输入你的职位" name="职位">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">随便填的：</label>
+        <div class="col-sm-8">
+            <input type="text" class="form-control col-sm-8" placeholder="请输入文本" name="文本框">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">单选：</label>
+        <div class="col-sm-8">
+            <label class="radio-inline">
+                <input type="radio" name="开心" value="开心" checked="" id="radio43839">开心</label>
+            <label class="radio-inline">
+                <input type="radio" name="不开心" value="不开心" id="radio43839">不开心</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">多选：</label>
+        <div class="col-sm-8">
+            <label class="radio-inline">
+                <input type="checkbox" name="吃饭" id="checkboxundefined">吃饭</label>
+            <label class="radio-inline">
+                <input type="checkbox" name="睡觉" id="checkboxundefined">睡觉</label>
+        </div>
+    </div>
+</div>
+				
+				<button type="submit" class="btn btn-default">提交</button>
+			</form>
+		</div>
+	</div>
+</body>
+</html>
+<!--
+<script type="text/javascript">
+	
+	function getCookie(cname){
+			var name = cname + "=";
+			var ca = document.cookie.split(';');
+			for(var i=0; i<ca.length; i++){
+				var c = ca[i].trim();
+			if (c.indexOf(name)==0) return c.substring(name.length,c.length);
+			 }
+			 return "";
+		}
+</script>-->

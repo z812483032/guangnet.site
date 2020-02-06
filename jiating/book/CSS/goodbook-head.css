@@ -1,0 +1,45 @@
+.goodbook{
+    margin-top: 30px;
+    margin-left: 50px;
+}
+.goodbook-head{
+    margin-bottom: 5px;
+}
+.goodbook-head .title{
+    height: 70px;
+    width:70px;
+
+}
+.goodbook-head a{
+    font-size: 35px;
+    color: #DC143C;
+    font-family: 华文行楷;
+}
+
+.goodbook-body-datail{
+    border: 1px solid #444444;
+    margin-bottom: -1px;
+    width: 280px;
+    padding: 12px 15px 0;
+    float: left;
+}
+.detail span:first-child :hover{
+    color: #FFCC00;
+}
+.detail span:first-child{
+    font-size: 15px;
+    font-weight: bold;
+    color: #333;
+
+}
+.detail .price{
+    margin-bottom: 10px;
+    font-size: 25px;
+    color:#FF6600;
+}
+.goodbook-body-datail .cover img{
+    width: 280px;
+    height: 280px;
+    display: block;
+    margin-bottom: 12px;
+}

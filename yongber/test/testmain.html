@@ -1,0 +1,1521 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>主界面</title>
+<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="css/normalize.css" />
+		<link rel="stylesheet" type="text/css" href="css/demo.css" />
+		<link rel="stylesheet" type="text/css" href="css/component.css" />
+<link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+ <link href="css/grayscale.min.css" rel="stylesheet">
+ 
+
+
+<script type="text/javascript">
+window.onload = function(){
+	var username = getCookie("username");
+	if(username ==''){
+    	window.location.href = 'test1.html';
+   	}
+  	else{
+	var admin = document.getElementById("admin");
+	var logouser = document.getElementById("logouser");
+	var password = document.getElementById("password");
+	var time = document.getElementById("time");
+	admin.innerHTML = username;
+	logouser.innerHTML = username;
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST","logo.php",true);	
+	xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded;charset=UTF-8");
+	xhr.send("username=" + username); 
+	xhr.onreadystatechange = function(){
+				if(xhr.readyState == 4 && xhr.status == 200){
+					try{
+					var dataObj = JSON.parse(xhr.responseText);
+					}catch(e){alert(e);return;}
+					var length = dataObj.password.length;
+					var psw = "";
+					for(var i = 0;i < length;i++){
+						var psw = psw + "*"; 
+					}
+					password.innerHTML = psw;
+					time.innerHTML = dataObj.oldtime;
+				}
+	};
+	
+	
+	var xhr1 = new XMLHttpRequest();
+	xhr1.open("POST","allform.php",true);
+	xhr1.setRequestHeader("Content-type","application/x-www-form-urlencoded;charset=UTF-8");
+	xhr1.send("username=" + username); 
+	xhr1.onreadystatechange = function(){
+				if(xhr1.readyState == 4 && xhr1.status == 200){
+					var formarray = xhr1.responseText.split(",");
+					var formlength = formarray.length;
+					var edittable = document.getElementById("alltbody");
+					var temp1 = 0;
+					var temp2 = 0;
+					for(var i1 = 0;i1<formlength;i1++){
+						if(i1==0){
+						var tr = "tr"+temp2;
+						var id2 = formarray[i1+5];
+						var id3 = "tr"+id2;
+						window[tr] = document.createElement("tr");
+						window[tr].setAttribute("id",id3);
+						}
+						var td = "td"+i1;
+						window[td] = document.createElement("td");
+						if(temp1 == 0){
+							var id1 = formarray[i1+5];
+							window[td].setAttribute("id",id1);
+							window[td].innerHTML = formarray[i1];
+							window[td].style.cursor = "pointer";
+							window[td].onmouseover = function(){
+								this.style.color = "red";
+							};
+							window[td].onmouseout = function(){
+								this.style.color = "#333";
+							};
+							window[td].setAttribute("onclick","goform()");
+								
+							window[tr].appendChild(window[td]);
+						}else if(temp1 == 1){
+							window[td].innerHTML = formarray[i1];
+							window[tr].appendChild(window[td]);
+						}
+						else if(temp1 == 2){
+							window[td].innerHTML = formarray[i1];
+							window[tr].appendChild(window[td]);
+						}else if(temp1 == 3){
+							window[td].innerHTML = formarray[i1];
+							window[tr].appendChild(window[td]);
+						}else if(temp1 == 4){
+							if(formarray[i1] == 1){
+								var cid = "cid" + formarray[i1+1];
+								window[td].setAttribute("id",cid);
+								window[td].style.cursor = "pointer";
+								window[td].setAttribute("onmouseover","this.style.color = 'red';");
+								window[td].setAttribute("onmouseout","this.style.color = '#333';");
+								window[td].innerHTML = "已完成";
+								window[td].setAttribute("onclick","changecomplate()");
+								window[tr].appendChild(window[td]);
+							}else{
+								var cid = "cid" + formarray[i1+1];
+								window[td].setAttribute("id",cid);
+								window[td].style.cursor = "pointer";
+								window[td].setAttribute("onmouseover","this.style.color = 'red';");
+								window[td].setAttribute("onmouseout","this.style.color = '#333';");
+								window[td].innerHTML = "未完成";
+								window[td].setAttribute("onclick","changecomplate()");
+								window[tr].appendChild(window[td]);
+							}
+						}
+						else if(temp1 == 5){
+							var id1 = "img"+formarray[i1];
+							window[td].setAttribute("id",id1);
+							window[td].innerHTML = '<img src="img/delete.png" style="cursor:pointer;"onclick="deleteform();"/>';
+							window[tr].appendChild(window[td]);
+						}
+						temp1++;
+						if(temp1 == 6){
+							edittable.appendChild(window[tr]);
+							window[tr].style.height = "50px";
+							window[tr].style.textAlign = "center";
+							temp1 = 0;
+							temp2++;
+							var tr = "tr"+temp2;
+							var id2 = formarray[i1+6];
+							var id3 = "tr"+id2;
+							window[tr] = document.createElement("tr");
+							window[tr].setAttribute("id",id3);
+						}
+					}
+					goPage(1,8);
+					addData();
+				}
+	};
+	}
+}
+
+
+function goform(){
+	var target = event.target;
+	var id = target.id;
+	var username = getCookie("username");
+	var target = username+"form"+id+".html"
+	window.open("w/" + target);
+}
+
+function changecomplate(){
+	var a = window.confirm("确认要修改该订单的完成情况吗？");
+	if(a == true){
+	var username = getCookie("username");
+	var target = event.target;
+	var id = target.id;
+	var id1 = id.split("cid");
+	var id2 = id1[1];
+	var cid1 = "fcid"+id2;
+	var complate = document.getElementById(id);
+    var e = document.getElementById(id);
+	var e1 = document.getElementById(cid1);
+	var xhr = new XMLHttpRequest();
+		xhr.open("POST","changecomplate.php",true);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded;charset=UTF-8");
+		xhr.send("id=" + id2 +"&username="+username + "&complate=" + complate.innerHTML);
+		xhr.onreadystatechange = function(){
+				if(xhr.readyState == 4 && xhr.status == 200){
+					if(xhr.responseText == 1){
+					complate.innerHTML = "已完成";
+					if(e1 != null){
+					document.getElementById(cid1).innerHTML = "已完成";
+				}
+					}
+					else{
+						complate.innerHTML = "未完成";
+					if(e1 != null){
+					document.getElementById(cid1).innerHTML = "未完成";
+					}
+					}
+				}
+		};
+	}
+}
+
+function changecomplate1(){
+	var a = window.confirm("确认要修改该订单的完成情况吗？");
+	if(a == true){
+	var username = getCookie("username");
+	var target = event.target;
+	var id = target.id;
+	var id1 = id.split("fcid");
+	var id2 = id1[1];
+	var cid1 = "cid"+id2;
+	var complate = document.getElementById(id);
+    var e = document.getElementById(id);
+	var e1 = document.getElementById(cid1);
+	var xhr = new XMLHttpRequest();
+		xhr.open("POST","changecomplate.php",true);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded;charset=UTF-8");
+		xhr.send("id=" + id2 +"&username="+username + "&complate=" + complate.innerHTML);
+		xhr.onreadystatechange = function(){
+				if(xhr.readyState == 4 && xhr.status == 200){
+					if(xhr.responseText == 1){
+					complate.innerHTML = "已完成";
+					if(e1 != null){
+					document.getElementById(cid1).innerHTML = "已完成";
+				}
+					}
+					else{
+						complate.innerHTML = "未完成";
+					if(e1 != null){
+					document.getElementById(cid1).innerHTML = "未完成";
+					}
+					}
+				}
+		};
+	}
+}
+
+function deleteform(){
+	var a = window.confirm("确认要删除该订单吗？");
+	if(a == true){
+	var username = getCookie("username");
+	var target = event.target;
+	var id = target.offsetParent.id;
+	var id1 = id.split("img");
+	var id2 = id1[1];
+	var tr = "tr"+id2;
+	var tr1 = "ftr"+id2;
+    var e = document.getElementById(tr);
+	var e1 = document.getElementById(tr1);
+	var xhr = new XMLHttpRequest();
+		xhr.open("POST","deleteform.php",true);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded;charset=UTF-8");
+		xhr.send("id=" + id2 +"&username="+username);
+        document.getElementById("alltbody").removeChild(e);
+		if(e1 != null){
+			document.getElementById("findtbody").removeChild(e1);
+		}
+		goPage(1,8);
+		goPage1(1,8);
+	}
+}
+
+function deleteform1(){
+	var a = window.confirm("确认要删除该订单吗？");
+	if(a == true){
+	var username = getCookie("username");
+	var target = event.target;
+	var id = target.offsetParent.id;
+	var id1 = id.split("img");
+	var id2 = id1[1];
+	var tr = "ftr"+id2;
+	var tr1 = "tr"+id2;
+    var e = document.getElementById(tr);
+	var e1 = document.getElementById(tr1);
+	var xhr = new XMLHttpRequest();
+		xhr.open("POST","deleteform.php",true);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded;charset=UTF-8");
+		xhr.send("id=" + id2 +"&username="+username);
+        document.getElementById("findtbody").removeChild(e);
+		if(e1 != null){
+			document.getElementById("alltbody").removeChild(e1);
+		}
+		goPage(1,8);
+		goPage1(1,8);
+	}
+}
+
+function getCookie(cname){ 
+var name = cname + "="; 
+var ca = document.cookie.split(';'); 
+for(var i=0; i<ca.length; i++) { 
+var c = ca[i].trim(); 
+if (c.indexOf(name)==0) { 
+return c.substring(name.length,c.length);
+ } 
+ } 
+ return ""; 
+ } 
+function openeye(){
+var username = getCookie("username");
+var openeye = document.getElementById("openeye");
+var closeeye = document.getElementById("closeeye");
+var password = document.getElementById("password");
+var xhr = new XMLHttpRequest();
+xhr.open("POST","logo.php",true);
+	xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded;charset=UTF-8");
+	xhr.send("username=" + username); 
+	xhr.onreadystatechange = function(){
+				if(xhr.readyState == 4 && xhr.status == 200){
+					try{
+					var dataObj = JSON.parse(xhr.responseText);
+					}catch(e){alert(e);return;}
+					password.innerHTML = dataObj.password;
+					openeye.style.display = "inherit";
+					closeeye.style.display = "none";
+				}
+	};
+}
+function closeeye(){
+var username = getCookie("username");
+var openeye = document.getElementById("openeye");
+var closeeye = document.getElementById("closeeye");
+var password = document.getElementById("password");
+var xhr = new XMLHttpRequest();
+xhr.open("POST","logo.php",true);
+	xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded;charset=UTF-8");
+	xhr.send("username=" + username); 
+	xhr.onreadystatechange = function(){
+				if(xhr.readyState == 4 && xhr.status == 200){
+					try{
+					var dataObj = JSON.parse(xhr.responseText);
+					}catch(e){alert(e);return;}
+					var length = dataObj.password.length;
+					var psw = "";
+					for(var i = 0;i < length;i++){
+						var psw = psw + "*"; 
+					}
+					password.innerHTML = psw;
+					openeye.style.display = "none";
+					closeeye.style.display = "inherit";
+				}
+	};
+}
+
+var detail_div = 2;
+function add_div(){
+	var e = document.getElementById("adddiv1");
+	var div = document.createElement("div");
+	div.className = "adddiv1";
+	div.id = "adddiv" +detail_div;
+	div.innerHTML = e.innerHTML;
+	document.getElementById("form").appendChild(div);
+	detail_div++;
+}
+function del_div() {
+		if(detail_div == 2){
+			alert("不能再删除了！");
+		}else{
+        var id = "adddiv" + (detail_div - 1).toString();
+        var e = document.getElementById(id);
+        document.getElementById("form").removeChild(e);
+        detail_div--;
+		}
+    }
+function logout(){
+		var a = window.confirm("确认注销账号吗？");
+		var username = getCookie("username");
+		if(a == true)
+		{
+		var xhr = new XMLHttpRequest();
+		xhr.open("POST","deleteuser.php",true);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded;charset=UTF-8");
+		xhr.send("username=" + username); 
+		setCookie("username",username,-1);
+		alert("注销成功，返回登录界面！");
+		location.href="test1.html";
+		}
+}
+function setCookie(cname,cvalue,exdays){ 
+var d = new Date(); 
+d.setTime(d.getTime()+(exdays*24*60*60*1000)); 
+var expires = "expires="+d.toGMTString(); 
+document.cookie = cname+"="+cvalue+"; "+expires; } 
+function quit(){
+		var username = getCookie("username");
+		var a = window.confirm("确认退出系统吗？");
+		if(a == true)
+		{
+		setCookie("username",username,-1);	
+		location.href="test1.html";
+		}
+}
+function alter(){
+	var a = window.confirm("确认修改密码吗？");
+	var username = getCookie("username");
+		if(a == true)
+		{
+		var password = prompt("要修改密码为：","");
+		if(password == ""){
+			alert("密码不能为空！")
+		}else if(password == null){
+		}else{
+		var xhr = new XMLHttpRequest();
+		xhr.open("POST","alterpassword.php",true);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded;charset=UTF-8");
+		xhr.send("username=" + username + "&password=" + password); 
+		alert("修改成功！");
+		location.reload(true); 
+		}
+		}
+}
+function addform(){
+	var username = getCookie("username");
+	var addtitle = document.getElementById("addtitle");
+	var addnumber = document.getElementById("addnumber");
+	var addpnm = document.getElementById("addpnm");
+	var addcustomer = document.getElementById("addcustomer");
+	var addfabric = document.getElementById("addfabric");
+	var adddate1 = document.getElementById("adddate1");
+	
+	var addnumbervalue = parseInt(addnumber.value);
+	var number = detail_div - 2;
+	var temp = 2;
+	for(var i = 0;i <number-1;i++){
+		temp++;
+	}
+	var tempid = "adddiv"+temp;
+	var adddiv= document.getElementById(""+tempid);
+	var temp1 = 0;
+	var temp2 = 3;
+	var array = new Array(number*3);
+	for(var j = 0;j <number;j++){
+		array[temp1] = adddiv.parentNode[temp2].value;
+		temp1++;
+		temp2++;
+		array[temp1] = adddiv.parentNode[temp2].value;
+		temp1++;
+		temp2++;
+		array[temp1] = adddiv.parentNode[temp2].value;
+		temp1++;
+		temp2++;
+	}
+	
+	var ntemp = 2;
+	var addallnumber = 0;
+	for(var i1 = 0;i1 <number;i1++){
+		addallnumber = addallnumber + parseInt(array[ntemp]);
+		ntemp = ntemp+3;
+	}
+	
+	var check = 0;
+	var temp3 = 0;
+	for(var k=0;k<temp1;k++){
+		if(array[k] == "" && temp3 == 0){
+			check = 1;
+			break;
+		}else if(array[k] == "" && temp3 == 1){
+			check = 2;
+			break;
+		}
+		else if(array[k] == "" && temp3 == 2){
+			check = 3;
+			break;
+		}else if(isNaN(array[k]) == true && temp3 == 2){
+			check = 4;
+			break;
+		}
+		temp3++;
+		if(temp3 == 3){
+			temp3 = 0;
+		}
+	}
+	if(addtitle.value == ""){
+		alert("款号不能为空");
+	}else if(addnumber.value == ""){
+		alert("数量不能为空");
+	}
+	else if(isNaN(addnumbervalue) == true){
+		alert("数量要为整数");
+	}
+	else if(addpnm.value == ""){
+		alert("品号不能为空");
+	}
+	else if(addcustomer.value == ""){
+		alert("客户不能为空");
+	}
+	else if(addfabric.value == ""){
+		alert("面料不能为空");
+	}
+	else if(adddate1.value == ""){
+		alert("出货日期不能为空");
+	}
+	else if(array.length == 0){
+		alert("必须添加颜色尺码");
+	}
+	else if(check == 1){
+		alert("颜色不能为空");
+	}
+	else if(check == 2){
+		alert("尺寸不能为空");
+	}
+	else if(check == 3){
+		alert("数量不能为空");
+	}
+	else if(check == 4){
+		alert("数量必须为整数");
+	}
+	else if(addallnumber != addnumbervalue){
+		alert("颜色尺码数量要和总数量相等");
+	}
+	else{
+		var xhr = new XMLHttpRequest();
+		xhr.open("POST","addform.php",true);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded;charset=UTF-8");
+		xhr.send("username=" + username + "&addtitle=" + addtitle.value + "&addnumber=" + addnumbervalue  + "&addpnm=" + addpnm.value + "&addcustomer=" + addcustomer.value + "&addfabric=" + addfabric.value + "&adddate1=" + adddate1.value + "&array=" + array + "&arraylength=" +  temp1);
+		xhr.onreadystatechange = function(){
+				if(xhr.readyState == 4 && xhr.status == 200){
+					alert("添加订单成功！");
+					var formnumber = username+"form"+xhr.responseText+".html";
+					window.open("w/"+formnumber);  
+					location.reload(true); 
+				}
+		}
+	}
+}
+
+
+
+function findform(){
+	var findcontect = document.getElementById("find");
+	var check = findcontect.value.split("-");
+	var username = getCookie("username");
+	if(findcontect.value == ""){
+		alert("查找的内容不能为空!");
+	}else if(check.length <= 3 && check.length >1){
+		var xhr = new XMLHttpRequest();
+		xhr.open("POST","findform1.php",true);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded;charset=UTF-8");
+		xhr.send("gotime="+findcontect.value + "&username="+username);
+		xhr.onreadystatechange = function(){
+				if(xhr.readyState == 4 && xhr.status == 200){
+					var formarray = xhr.responseText.split(",");
+					if(formarray[0] == ""){
+						alert("找不到订单！");
+					}else{
+						$("#findtable tbody").html("");
+					var formlength = formarray.length;
+					var edittable = document.getElementById("findtbody");
+					var temp1 = 0;
+					var temp2 = 0;
+					for(var i1 = 0;i1<formlength;i1++){
+						if(i1==0){
+						var tr = "tr"+temp2;
+						var id2 = formarray[i1+5];
+						var id3 = "ftr"+id2;
+						window[tr] = document.createElement("tr");
+						window[tr].setAttribute("id",id3);
+						}
+						var td = "td"+i1;
+						window[td] = document.createElement("td");
+						if(temp1 == 0){
+							var id1 = formarray[i1+5];
+							window[td].setAttribute("id",id1);
+							window[td].innerHTML = formarray[i1];
+							window[td].style.cursor = "pointer";
+							window[td].onmouseover = function(){
+								this.style.color = "red";
+							};
+							window[td].onmouseout = function(){
+								this.style.color = "#333";
+							};
+							window[td].setAttribute("onclick","goform()");
+								
+							window[tr].appendChild(window[td]);
+						}else if(temp1 == 1){
+							window[td].innerHTML = formarray[i1];
+							window[tr].appendChild(window[td]);
+						}else if(temp1 == 2){
+							window[td].innerHTML = formarray[i1];
+							window[tr].appendChild(window[td]);
+						}else if(temp1 == 3){
+							window[td].innerHTML = formarray[i1];
+							window[tr].appendChild(window[td]);
+						}else if(temp1 == 4){
+							if(formarray[i1] == 1){
+								var cid = "fcid" + formarray[i1+1];
+								window[td].setAttribute("id",cid);
+								window[td].style.cursor = "pointer";
+								window[td].setAttribute("onmouseover","this.style.color = 'red';");
+								window[td].setAttribute("onmouseout","this.style.color = '#333';");
+								window[td].innerHTML = "已完成";
+								window[td].setAttribute("onclick","changecomplate1()");
+								window[tr].appendChild(window[td]);
+							}else{
+								var cid = "fcid" + formarray[i1+1];
+								window[td].setAttribute("id",cid);
+								window[td].style.cursor = "pointer";
+								window[td].setAttribute("onmouseover","this.style.color = 'red';");
+								window[td].setAttribute("onmouseout","this.style.color = '#333';");
+								window[td].innerHTML = "未完成";
+								window[td].setAttribute("onclick","changecomplate1()");
+								window[tr].appendChild(window[td]);
+							}
+						}else if(temp1 == 5){
+							var id1 = "img"+formarray[i1];
+							window[td].setAttribute("id",id1);
+							window[td].innerHTML = '<img src="img/delete.png" style="cursor:pointer;"onclick="deleteform1();"/>';
+							window[tr].appendChild(window[td]);
+						}
+						temp1++;
+						if(temp1 == 6){
+							edittable.appendChild(window[tr]);
+							window[tr].style.height = "50px";
+							window[tr].style.textAlign = "center";
+							temp1 = 0;
+							temp2++;
+							var tr = "tr"+temp2;
+							var id2 = formarray[i1+6];
+							var id3 = "ftr"+id2;
+							window[tr] = document.createElement("tr");
+							window[tr].setAttribute("id",id3);
+						}
+					}
+					goPage1(1,8);
+					}
+				}
+		};
+	}else{
+		var xhr = new XMLHttpRequest();
+		xhr.open("POST","findform.php",true);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded;charset=UTF-8");
+		xhr.send("title="+findcontect.value + "&username="+username);
+		xhr.onreadystatechange = function(){
+				if(xhr.readyState == 4 && xhr.status == 200){
+					var formarray = xhr.responseText.split(",");
+					if(formarray[0] == ""){
+						alert("找不到订单！");
+					}else{
+					$("#findtable tbody").html("");
+					var formlength = formarray.length;
+					var edittable = document.getElementById("findtbody");
+					var temp1 = 0;
+					var temp2 = 0;
+					for(var i1 = 0;i1<formlength;i1++){
+						if(i1==0){
+						var tr = "tr"+temp2;
+						window[tr] = document.createElement("tr");
+						var id2 = formarray[i1+5];
+						var id3 = "ftr"+id2;
+						window[tr].setAttribute("id",id3);
+						}
+						var td = "td"+i1;
+						window[td] = document.createElement("td");
+						if(temp1 == 0){
+							var id1 = formarray[i1+5];
+							window[td].setAttribute("id",id1);
+							window[td].innerHTML = formarray[i1];
+							window[td].style.cursor = "pointer";
+							window[td].onmouseover = function(){
+								this.style.color = "red";
+							};
+							window[td].onmouseout = function(){
+								this.style.color = "#333";
+							};
+							window[td].setAttribute("onclick","goform()");
+								
+							window[tr].appendChild(window[td]);
+						}else if(temp1 == 1){
+							window[td].innerHTML = formarray[i1];
+							window[tr].appendChild(window[td]);
+						}else if(temp1 == 2){
+							window[td].innerHTML = formarray[i1];
+							window[tr].appendChild(window[td]);
+						}else if(temp1 == 3){
+							window[td].innerHTML = formarray[i1];
+							window[tr].appendChild(window[td]);
+						}else if(temp1 == 4){
+							if(formarray[i1] == 1){
+								var cid = "fcid" + formarray[i1+1];
+								window[td].setAttribute("id",cid);
+								window[td].style.cursor = "pointer";
+								window[td].setAttribute("onmouseover","this.style.color = 'red';");
+								window[td].setAttribute("onmouseout","this.style.color = '#333';");
+								window[td].innerHTML = "已完成";
+								window[td].setAttribute("onclick","changecomplate1()");
+								window[tr].appendChild(window[td]);
+							}else{
+								var cid = "fcid" + formarray[i1+1];
+								window[td].setAttribute("id",cid);
+								window[td].style.cursor = "pointer";
+								window[td].setAttribute("onmouseover","this.style.color = 'red';");
+								window[td].setAttribute("onmouseout","this.style.color = '#333';");
+								window[td].innerHTML = "未完成";
+								window[td].setAttribute("onclick","changecomplate1()");
+								window[tr].appendChild(window[td]);
+							}
+						}else if(temp1 == 5){
+							var id1 = "img"+formarray[i1];
+							window[td].setAttribute("id",id1);
+							window[td].innerHTML = '<img src="img/delete.png" style="cursor:pointer;"onclick="deleteform1();"/>';
+							window[tr].appendChild(window[td]);
+						}
+						temp1++;
+						if(temp1 == 6){
+							edittable.appendChild(window[tr]);
+							window[tr].style.height = "50px";
+							window[tr].style.textAlign = "center";
+							temp1 = 0;
+							temp2++;
+							var tr = "tr"+temp2;
+							var id2 = formarray[i1+6];
+							var id3 = "ftr"+id2;
+							window[tr] = document.createElement("tr");
+							window[tr].setAttribute("id",id3);
+						}
+					}
+						goPage1(1,8);
+					}
+				}
+		};
+	}
+}
+
+
+function goPage(pno,psize){
+    var itable = document.getElementById("alltbody");
+    var num = itable.rows.length;//表格所有行数(所有记录数)
+    //console.log(num);
+    var totalPage = 0;//总页数
+    var pageSize = psize;//每页显示行数
+    //总共分几页 
+    if(num/pageSize > parseInt(num/pageSize)){   
+            totalPage=parseInt(num/pageSize)+1;   
+       }else{   
+           totalPage=parseInt(num/pageSize);   
+       }   
+    var currentPage = parseInt(pno);//当前页数
+    var startRow = (currentPage - 1) * pageSize+1;//开始显示的行  31 
+       var endRow = currentPage * pageSize;//结束显示的行   40
+       endRow = (endRow > num)? num : endRow;    //40
+      // console.log(endRow);
+       //遍历显示数据实现分页
+    for(var i=1;i<(num+1);i++){    
+        var irow = itable.rows[i-1];
+        if(i>=startRow && i<=endRow){
+            irow.style.display = "table-row";    
+			//irow.cells.style.width = "11%"; 
+        }else{
+            irow.style.display = "none";
+			//irow.cells.style.width = "11%"; 
+        }
+    }
+    var tempStr = "共"+num+"个订单 分"+totalPage+"页 当前第"+currentPage+"页&nbsp;&nbsp;";
+    tempStr +="跳转至";
+	tempStr +="<select name='selectpage' style='width:60px;'>"; 
+	tempStr +="<option value='0' selected='selected'></option>"
+	for(var j=1;j<=totalPage;j++){
+		tempStr +="<option  value='"+j+"' >第"+ j +"页</option>";
+	}
+	tempStr +="</select><br/>";
+    if(currentPage>1){
+        tempStr += "<a href=\"#\" class=\"btn btn-sm btn-primary\" onClick=\"javascript:goPage("+(1)+","+psize+");return false;\" style=\"height:50px; margin-top:10px;\">首页</a>&nbsp;&nbsp;";
+        tempStr += "<a href=\"#\" class=\"btn btn-sm btn-primary\" onClick=\"javascript:goPage("+(currentPage-1)+","+psize+");return false;\" style=\"height:50px;margin-top:10px;\">上一页</a>&nbsp;&nbsp;"
+    }else{
+        tempStr += "<a href=\"#\" class=\"btn btn-sm btn-metal\" onClick=\" return false;\" style=\"height:50px;margin-top:10px;\">首页</a>&nbsp;&nbsp;";
+        tempStr += "<a href=\"#\" class=\"btn btn-sm btn-metal\" onClick=\" return false;\" style=\"height:50px;margin-top:10px;\">上一页</a>&nbsp;&nbsp;";   
+    }
+
+    if(currentPage<totalPage){
+        tempStr += "<a href=\"#\" class=\"btn btn-sm btn-primary\" onClick=\"javascript:goPage("+(currentPage+1)+","+psize+");return false;\" style=\"height:50px;margin-top:10px;\">下一页</a>&nbsp;&nbsp;";
+        tempStr += "<a href=\"#\" class=\"btn btn-sm btn-primary\" onClick=\"javascript:goPage("+(totalPage)+","+psize+");return false;\"style=\"height:50px;margin-top:10px;\">尾页</a>&nbsp;&nbsp;";
+    }else{
+        tempStr += "<a href=\"#\" class=\"btn btn-sm btn-metal\" onClick=\" return false;\"style=\"height:50px;margin-top:10px;\">下一页</a>&nbsp;&nbsp;";
+       tempStr += "<a href=\"#\" class=\"btn btn-sm btn-metal\" onClick=\" return false;\"style=\"height:50px;margin-top:10px;\">尾页</a>&nbsp;&nbsp;";   
+    }
+	
+    document.getElementById("barcon").innerHTML = tempStr;
+    $("select[name='selectpage']").change(function(){
+    						goPage(this.value,8);
+					})
+}
+
+function goPage1(pno,psize){
+    var itable = document.getElementById("findtbody");
+    var num = itable.rows.length;//表格所有行数(所有记录数)
+    //console.log(num);
+    var totalPage = 0;//总页数
+    var pageSize = psize;//每页显示行数
+    //总共分几页 
+    if(num/pageSize > parseInt(num/pageSize)){   
+            totalPage=parseInt(num/pageSize)+1;   
+       }else{   
+           totalPage=parseInt(num/pageSize);   
+       }   
+    var currentPage = parseInt(pno);//当前页数
+    var startRow = (currentPage - 1) * pageSize+1;//开始显示的行  31 
+       var endRow = currentPage * pageSize;//结束显示的行   40
+       endRow = (endRow > num)? num : endRow;    //40
+      // console.log(endRow);
+       //遍历显示数据实现分页
+    for(var i=1;i<(num+1);i++){    
+        var irow = itable.rows[i-1];
+        if(i>=startRow && i<=endRow){
+            irow.style.display = "table-row";    
+			//irow.cells.style.width = "11%"; 
+        }else{
+            irow.style.display = "none";
+			//irow.cells.style.width = "11%"; 
+        }
+    }
+    var tempStr = "共"+num+"个订单 分"+totalPage+"页 当前第"+currentPage+"页&nbsp;&nbsp;";
+    tempStr +="跳转至";
+	tempStr +="<select name='selectpage' style='width:60px;'>"; 
+	tempStr +="<option value='0' selected='selected'></option>"
+	for(var j=1;j<=totalPage;j++){
+		tempStr +="<option  value='"+j+"' >第"+ j +"页</option>";
+	}
+	tempStr +="</select><br/>";
+    if(currentPage>1){
+        tempStr += "<a href=\"#\" class=\"btn btn-sm btn-primary\" onClick=\"javascript:goPage1("+(1)+","+psize+");return false;\" style=\"height:50px; margin-top:10px;\">首页</a>&nbsp;&nbsp;";
+        tempStr += "<a href=\"#\" class=\"btn btn-sm btn-primary\" onClick=\"javascript:goPage1("+(currentPage-1)+","+psize+");return false;\" style=\"height:50px;margin-top:10px;\">上一页</a>&nbsp;&nbsp;"
+    }else{
+        tempStr += "<a href=\"#\" class=\"btn btn-sm btn-metal\" onClick=\" return false;\" style=\"height:50px;margin-top:10px;\">首页</a>&nbsp;&nbsp;";
+        tempStr += "<a href=\"#\" class=\"btn btn-sm btn-metal\" onClick=\" return false;\" style=\"height:50px;margin-top:10px;\">上一页</a>&nbsp;&nbsp;";   
+    }
+
+    if(currentPage<totalPage){
+        tempStr += "<a href=\"#\" class=\"btn btn-sm btn-primary\" onClick=\"javascript:goPage1("+(currentPage+1)+","+psize+");return false;\" style=\"height:50px;margin-top:10px;\">下一页</a>&nbsp;&nbsp;";
+        tempStr += "<a href=\"#\" class=\"btn btn-sm btn-primary\" onClick=\"javascript:goPage1("+(totalPage)+","+psize+");return false;\"style=\"height:50px;margin-top:10px;\">尾页</a>&nbsp;&nbsp;";
+    }else{
+        tempStr += "<a href=\"#\" class=\"btn btn-sm btn-metal\" onClick=\" return false;\"style=\"height:50px;margin-top:10px;\">下一页</a>&nbsp;&nbsp;";
+       tempStr += "<a href=\"#\" class=\"btn btn-sm btn-metal\" onClick=\" return false;\"style=\"height:50px;margin-top:10px;\">尾页</a>&nbsp;&nbsp;";   
+    }
+	
+    document.getElementById("barcon1").innerHTML = tempStr;
+    $("select[name='selectpage']").change(function(){
+    						goPage1(this.value,8);
+					})
+}
+
+function addData(){
+//清空下拉选中的数据
+$("#selectid").empty();
+
+$("#selectid").append("<option value='0'>所有订单</option>");
+$("#selectid").append("<option value='1'>已完成订单</option>");
+$("#selectid").append("<option value='2'>未完成订单</option>");
+
+var tableId = document.getElementById("alltable"); 
+		var arr = new Array();
+		for(var i=1;i<tableId.rows.length;i++)
+		{
+			arr[i-1] = tableId.rows[i].cells[1].innerHTML;
+		}
+		var xhr = new XMLHttpRequest();
+		xhr.open("POST","customer.php",true);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded;charset=UTF-8");
+		xhr.send("customer="+arr);
+		xhr.onreadystatechange = function(){
+				if(xhr.readyState == 4 && xhr.status == 200){
+					var result = xhr.responseText;
+					var result1 = result.split(",");
+					var arraylength1 = result1.length;
+					var temp = 3;
+					for(var i = 0;i<arraylength1;i++){
+						$("#selectid").append("<option value="+temp+">"+result1[i]+"</option>");
+						temp++;
+					}
+				}
+		};
+		 $("select[name='selectid']").change(function(){
+    						gocustomer(this);
+					})
+}
+
+function gocustomer(customertext){
+	var username = getCookie("username");
+if(customertext.value == 0){
+	var xhr1 = new XMLHttpRequest();
+	xhr1.open("POST","allform.php",true);
+	xhr1.setRequestHeader("Content-type","application/x-www-form-urlencoded;charset=UTF-8");
+	xhr1.send("username=" + username); 
+	xhr1.onreadystatechange = function(){
+				if(xhr1.readyState == 4 && xhr1.status == 200){
+					var formarray = xhr1.responseText.split(",");
+					var formlength = formarray.length;
+						$("#alltable tbody").html("");
+					var edittable = document.getElementById("alltbody");
+					var temp1 = 0;
+					var temp2 = 0;
+					for(var i1 = 0;i1<formlength;i1++){
+						if(i1==0){
+						var tr = "tr"+temp2;
+						var id2 = formarray[i1+5];
+						var id3 = "tr"+id2;
+						window[tr] = document.createElement("tr");
+						window[tr].setAttribute("id",id3);
+						}
+						var td = "td"+i1;
+						window[td] = document.createElement("td");
+						if(temp1 == 0){
+							var id1 = formarray[i1+5];
+							window[td].setAttribute("id",id1);
+							window[td].innerHTML = formarray[i1];
+							window[td].style.cursor = "pointer";
+							window[td].onmouseover = function(){
+								this.style.color = "red";
+							};
+							window[td].onmouseout = function(){
+								this.style.color = "#333";
+							};
+							window[td].setAttribute("onclick","goform()");
+								
+							window[tr].appendChild(window[td]);
+						}else if(temp1 == 1){
+							window[td].innerHTML = formarray[i1];
+							window[tr].appendChild(window[td]);
+						}
+						else if(temp1 == 2){
+							window[td].innerHTML = formarray[i1];
+							window[tr].appendChild(window[td]);
+						}else if(temp1 == 3){
+							window[td].innerHTML = formarray[i1];
+							window[tr].appendChild(window[td]);
+						}else if(temp1 == 4){
+							if(formarray[i1] == 1){
+								var cid = "cid" + formarray[i1+1];
+								window[td].setAttribute("id",cid);
+								window[td].style.cursor = "pointer";
+								window[td].setAttribute("onmouseover","this.style.color = 'red';");
+								window[td].setAttribute("onmouseout","this.style.color = '#333';");
+								window[td].innerHTML = "已完成";
+								window[td].setAttribute("onclick","changecomplate()");
+								window[tr].appendChild(window[td]);
+							}else{
+								var cid = "cid" + formarray[i1+1];
+								window[td].setAttribute("id",cid);
+								window[td].style.cursor = "pointer";
+								window[td].setAttribute("onmouseover","this.style.color = 'red';");
+								window[td].setAttribute("onmouseout","this.style.color = '#333';");
+								window[td].innerHTML = "未完成";
+								window[td].setAttribute("onclick","changecomplate()");
+								window[tr].appendChild(window[td]);
+							}
+						}
+						else if(temp1 == 5){
+							var id1 = "img"+formarray[i1];
+							window[td].setAttribute("id",id1);
+							window[td].innerHTML = '<img src="img/delete.png" style="cursor:pointer;"onclick="deleteform();"/>';
+							window[tr].appendChild(window[td]);
+						}
+						temp1++;
+						if(temp1 == 6){
+							edittable.appendChild(window[tr]);
+							window[tr].style.height = "50px";
+							window[tr].style.textAlign = "center";
+							temp1 = 0;
+							temp2++;
+							var tr = "tr"+temp2;
+							var id2 = formarray[i1+6];
+							var id3 = "tr"+id2;
+							window[tr] = document.createElement("tr");
+							window[tr].setAttribute("id",id3);
+						}
+					}
+					goPage(1,8);
+				}
+	};	
+}else if(customertext.value == 1){
+		var xhr = new XMLHttpRequest();
+		xhr.open("POST","findcomplate.php",true);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded;charset=UTF-8");
+		xhr.send("complate="+1+"&username="+username);
+		xhr.onreadystatechange = function(){
+				if(xhr.readyState == 4 && xhr.status == 200){
+					var formarray = xhr.responseText.split(",");
+					$("#alltable tbody").html("");
+					var formlength = formarray.length;
+					var edittable = document.getElementById("alltbody");
+					var temp1 = 0;
+					var temp2 = 0;
+					for(var i1 = 0;i1<formlength;i1++){
+						if(i1==0){
+						var tr = "tr"+temp2;
+						window[tr] = document.createElement("tr");
+						var id2 = formarray[i1+5];
+						var id3 = "ftr"+id2;
+						window[tr].setAttribute("id",id3);
+						}
+						var td = "td"+i1;
+						window[td] = document.createElement("td");
+						if(temp1 == 0){
+							var id1 = formarray[i1+5];
+							window[td].setAttribute("id",id1);
+							window[td].innerHTML = formarray[i1];
+							window[td].style.cursor = "pointer";
+							window[td].onmouseover = function(){
+								this.style.color = "red";
+							};
+							window[td].onmouseout = function(){
+								this.style.color = "#333";
+							};
+							window[td].setAttribute("onclick","goform()");
+								
+							window[tr].appendChild(window[td]);
+						}else if(temp1 == 1){
+							window[td].innerHTML = formarray[i1];
+							window[tr].appendChild(window[td]);
+						}else if(temp1 == 2){
+							window[td].innerHTML = formarray[i1];
+							window[tr].appendChild(window[td]);
+						}else if(temp1 == 3){
+							window[td].innerHTML = formarray[i1];
+							window[tr].appendChild(window[td]);
+						}else if(temp1 == 4){
+							if(formarray[i1] == 1){
+								var cid = "fcid" + formarray[i1+1];
+								window[td].setAttribute("id",cid);
+								window[td].style.cursor = "pointer";
+								window[td].setAttribute("onmouseover","this.style.color = 'red';");
+								window[td].setAttribute("onmouseout","this.style.color = '#333';");
+								window[td].innerHTML = "已完成";
+								window[td].setAttribute("onclick","changecomplate1()");
+								window[tr].appendChild(window[td]);
+							}else{
+								var cid = "fcid" + formarray[i1+1];
+								window[td].setAttribute("id",cid);
+								window[td].style.cursor = "pointer";
+								window[td].setAttribute("onmouseover","this.style.color = 'red';");
+								window[td].setAttribute("onmouseout","this.style.color = '#333';");
+								window[td].innerHTML = "未完成";
+								window[td].setAttribute("onclick","changecomplate1()");
+								window[tr].appendChild(window[td]);
+							}
+						}else if(temp1 == 5){
+							var id1 = "img"+formarray[i1];
+							window[td].setAttribute("id",id1);
+							window[td].innerHTML = '<img src="img/delete.png" style="cursor:pointer;"onclick="deleteform1();"/>';
+							window[tr].appendChild(window[td]);
+						}
+						temp1++;
+						if(temp1 == 6){
+							edittable.appendChild(window[tr]);
+							window[tr].style.height = "50px";
+							window[tr].style.textAlign = "center";
+							temp1 = 0;
+							temp2++;
+							var tr = "tr"+temp2;
+							var id2 = formarray[i1+6];
+							var id3 = "ftr"+id2;
+							window[tr] = document.createElement("tr");
+							window[tr].setAttribute("id",id3);
+						}
+					}
+						goPage(1,8);
+					}
+				
+		};		
+}else if(customertext.value == 2){
+	var xhr = new XMLHttpRequest();
+		xhr.open("POST","findcomplate.php",true);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded;charset=UTF-8");
+		xhr.send("complate="+0+"&username="+username);
+		xhr.onreadystatechange = function(){
+				if(xhr.readyState == 4 && xhr.status == 200){
+					var formarray = xhr.responseText.split(",");
+					$("#alltable tbody").html("");
+					var formlength = formarray.length;
+					var edittable = document.getElementById("alltbody");
+					var temp1 = 0;
+					var temp2 = 0;
+					for(var i1 = 0;i1<formlength;i1++){
+						if(i1==0){
+						var tr = "tr"+temp2;
+						window[tr] = document.createElement("tr");
+						var id2 = formarray[i1+5];
+						var id3 = "ftr"+id2;
+						window[tr].setAttribute("id",id3);
+						}
+						var td = "td"+i1;
+						window[td] = document.createElement("td");
+						if(temp1 == 0){
+							var id1 = formarray[i1+5];
+							window[td].setAttribute("id",id1);
+							window[td].innerHTML = formarray[i1];
+							window[td].style.cursor = "pointer";
+							window[td].onmouseover = function(){
+								this.style.color = "red";
+							};
+							window[td].onmouseout = function(){
+								this.style.color = "#333";
+							};
+							window[td].setAttribute("onclick","goform()");
+								
+							window[tr].appendChild(window[td]);
+						}else if(temp1 == 1){
+							window[td].innerHTML = formarray[i1];
+							window[tr].appendChild(window[td]);
+						}else if(temp1 == 2){
+							window[td].innerHTML = formarray[i1];
+							window[tr].appendChild(window[td]);
+						}else if(temp1 == 3){
+							window[td].innerHTML = formarray[i1];
+							window[tr].appendChild(window[td]);
+						}else if(temp1 == 4){
+							if(formarray[i1] == 1){
+								var cid = "fcid" + formarray[i1+1];
+								window[td].setAttribute("id",cid);
+								window[td].style.cursor = "pointer";
+								window[td].setAttribute("onmouseover","this.style.color = 'red';");
+								window[td].setAttribute("onmouseout","this.style.color = '#333';");
+								window[td].innerHTML = "已完成";
+								window[td].setAttribute("onclick","changecomplate1()");
+								window[tr].appendChild(window[td]);
+							}else{
+								var cid = "fcid" + formarray[i1+1];
+								window[td].setAttribute("id",cid);
+								window[td].style.cursor = "pointer";
+								window[td].setAttribute("onmouseover","this.style.color = 'red';");
+								window[td].setAttribute("onmouseout","this.style.color = '#333';");
+								window[td].innerHTML = "未完成";
+								window[td].setAttribute("onclick","changecomplate1()");
+								window[tr].appendChild(window[td]);
+							}
+						}else if(temp1 == 5){
+							var id1 = "img"+formarray[i1];
+							window[td].setAttribute("id",id1);
+							window[td].innerHTML = '<img src="img/delete.png" style="cursor:pointer;"onclick="deleteform1();"/>';
+							window[tr].appendChild(window[td]);
+						}
+						temp1++;
+						if(temp1 == 6){
+							edittable.appendChild(window[tr]);
+							window[tr].style.height = "50px";
+							window[tr].style.textAlign = "center";
+							temp1 = 0;
+							temp2++;
+							var tr = "tr"+temp2;
+							var id2 = formarray[i1+6];
+							var id3 = "ftr"+id2;
+							window[tr] = document.createElement("tr");
+							window[tr].setAttribute("id",id3);
+						}
+					}
+						goPage(1,8);
+					}
+				
+		};
+}else{
+		var customer = customertext.selectedOptions[0].innerHTML;
+		var xhr = new XMLHttpRequest();
+		xhr.open("POST","findcustomer.php",true);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded;charset=UTF-8");
+		xhr.send("customer="+customer+"&username="+username);
+		xhr.onreadystatechange = function(){
+				if(xhr.readyState == 4 && xhr.status == 200){
+					var formarray = xhr.responseText.split(",");
+					$("#alltable tbody").html("");
+					var formlength = formarray.length;
+					var edittable = document.getElementById("alltbody");
+					var temp1 = 0;
+					var temp2 = 0;
+					for(var i1 = 0;i1<formlength;i1++){
+						if(i1==0){
+						var tr = "tr"+temp2;
+						window[tr] = document.createElement("tr");
+						var id2 = formarray[i1+5];
+						var id3 = "ftr"+id2;
+						window[tr].setAttribute("id",id3);
+						}
+						var td = "td"+i1;
+						window[td] = document.createElement("td");
+						if(temp1 == 0){
+							var id1 = formarray[i1+5];
+							window[td].setAttribute("id",id1);
+							window[td].innerHTML = formarray[i1];
+							window[td].style.cursor = "pointer";
+							window[td].onmouseover = function(){
+								this.style.color = "red";
+							};
+							window[td].onmouseout = function(){
+								this.style.color = "#333";
+							};
+							window[td].setAttribute("onclick","goform()");
+								
+							window[tr].appendChild(window[td]);
+						}else if(temp1 == 1){
+							window[td].innerHTML = formarray[i1];
+							window[tr].appendChild(window[td]);
+						}else if(temp1 == 2){
+							window[td].innerHTML = formarray[i1];
+							window[tr].appendChild(window[td]);
+						}else if(temp1 == 3){
+							window[td].innerHTML = formarray[i1];
+							window[tr].appendChild(window[td]);
+						}else if(temp1 == 4){
+							if(formarray[i1] == 1){
+								var cid = "fcid" + formarray[i1+1];
+								window[td].setAttribute("id",cid);
+								window[td].style.cursor = "pointer";
+								window[td].setAttribute("onmouseover","this.style.color = 'red';");
+								window[td].setAttribute("onmouseout","this.style.color = '#333';");
+								window[td].innerHTML = "已完成";
+								window[td].setAttribute("onclick","changecomplate1()");
+								window[tr].appendChild(window[td]);
+							}else{
+								var cid = "fcid" + formarray[i1+1];
+								window[td].setAttribute("id",cid);
+								window[td].style.cursor = "pointer";
+								window[td].setAttribute("onmouseover","this.style.color = 'red';");
+								window[td].setAttribute("onmouseout","this.style.color = '#333';");
+								window[td].innerHTML = "未完成";
+								window[td].setAttribute("onclick","changecomplate1()");
+								window[tr].appendChild(window[td]);
+							}
+						}else if(temp1 == 5){
+							var id1 = "img"+formarray[i1];
+							window[td].setAttribute("id",id1);
+							window[td].innerHTML = '<img src="img/delete.png" style="cursor:pointer;"onclick="deleteform1();"/>';
+							window[tr].appendChild(window[td]);
+						}
+						temp1++;
+						if(temp1 == 6){
+							edittable.appendChild(window[tr]);
+							window[tr].style.height = "50px";
+							window[tr].style.textAlign = "center";
+							temp1 = 0;
+							temp2++;
+							var tr = "tr"+temp2;
+							var id2 = formarray[i1+6];
+							var id3 = "ftr"+id2;
+							window[tr] = document.createElement("tr");
+							window[tr].setAttribute("id",id3);
+						}
+					}
+						goPage(1,8);
+					}
+				
+		};
+}
+}
+
+
+</script>
+<style type="text/css">
+#quit{	float:right;  margin-left:30px;}
+#logout{ float:left; margin-left:30px;}
+#deletebtn{float:right;  margin-right:145px;  margin-top:10px}
+#addbtn{ float:left; margin-left:145px; margin-top:10px;}
+#add{ user-select:none;}
+#user{ user-select:none;}
+#all{ user-select:none;}
+#alldiv{ width:2000px;}
+.rightdiv{ margin-left:200px;}
+.addword2{font-size:10px; padding-left:240px;}
+.eye{ float:right; margin-left:-300px; padding-right:280px; padding-top:5px; cursor:pointer;}
+.adddiv{font-size:20px; width:900px; margin-left:-125px;}
+.adddiv1{font-size:20px; width:1000px; margin-left:-105px;}
+.addcolor{margin-left:-40px;}
+.addsize{margin-left:-150px;}
+.addnumber{margin-left:-150px;}
+.addinput{ width:300px;}
+.addinput1{ width:200px;}
+.addinput2{ width:310px;}
+.addword{ padding-left:230px;}
+.addword1{ padding-left:140px;}
+#addword{ padding-left:210px;}
+#addword1{ padding-left:220px;}
+.firstdiv{ width:220px;}
+.secondiv{ width:200px;}
+.thirddiv{ width:250px;}
+#adddate1{ width:250px; padding-left:50px; font-size:22px; padding-top:20px;}
+#size{ margin-left:50px;}
+#number{ margin-left:50px;}
+#file2{ margin-left:175px;}
+#checkbtn{ margin-top:100px;}
+#search{ margin-left:-10px;}
+.find{ height:60px; margin-left:40px;}
+.largefind{ margin-top:30px; width:800px;}
+#finddiv{ float:left;  width:700px; height:640px; margin-left:100px; margin-top:50px;margin-bottom:50px; overflow-y:auto;}
+#allform{ float:right; width:700px; height:640px; margin-right:100px; margin-top:50px;margin-bottom:50px; overflow-y:auto;}
+</style>
+</head>
+<body  id="page-top">
+<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+    <div class="container" style="user-select:none;">
+      <a class="navbar-brand js-scroll-trigger" href="#page-top">服装订单管理系统</a>
+      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        Menu
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="#all">订单汇总</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="#add">添加订单</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="#user" id="admin"></a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!-- Header -->
+  <header class="masthead" style="user-select:none;">
+    <div class="container d-flex h-100 align-items-center">
+      <div class="mx-auto text-center">
+        <h1 class="mx-auto my-0 text-uppercase">服装订单管理系统</h1>
+        <a href="#all" class="btn btn-primary js-scroll-trigger" style="margin-top:50px;">开始管理</a>
+      </div>
+    </div>
+  </header>
+  
+  <!-- About Section -->
+  <section id="all" class="about-section text-center">
+    <div class="container" id="alldiv">
+      <div class="row">
+      	<div class="col-md-10 col-lg-8 mx-auto text-center">
+     	<img src="img/mirror.png">
+        <div id="search">
+        <form class="form-inline d-flex largefind">
+            <input type="text" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0 find" id="find" placeholder="输入款号或者收货日期">
+            <span class="btn btn-primary mx-auto" id="findbtn" onClick="findform();">搜索</span>
+          </form>
+          </div>
+    </div>
+    </div>
+    </div>
+      <div id="maindiv" style="overflow:hidden;">
+          <div id="finddiv" style="background-color:white;">
+          <h4 style="padding-top:30px;  padding-bottom:10px;">搜索到的订单</h4>
+          
+          <table class="table" style=" font-size:15px;" id="findtable" >
+          <thead>
+          <tr>
+          		<th >款号</th>
+          		<th>客户</th>
+                <th>收货日期</th>
+                <th>下单日期</th>
+                <th>完成情况</th>
+                <th></th>
+          </tr>  
+          </thead>
+          <tbody id="findtbody"> 
+          </tbody>
+          </table> 
+          <table width="100%" align="right">
+        <tr><td><div id="barcon1" name="barcon1"></div></td></tr>
+		 </table>
+          </div>
+        	<div id="allform" style="background-color:white;">             
+          <h4 style="padding-top:30px; padding-bottom:10px;" id="allofform">所有订单<select name="selectid" style="float:right; margin-right:20px;" id="selectid" >
+          	</select></h4>
+          <table class="table" style=" font-size:15px;" id="alltable">
+          <thead>
+          <tr>
+          		<th>款号</th>
+          		<th>客户</th>
+                <th>收货日期</th>
+                <th>下单日期</th>
+                <th>完成情况</th>
+                <th></th>
+          </tr>  
+          </thead>
+          <tbody id="alltbody">
+          </tbody>
+          </table> 
+          <table width="100%" align="right">
+        <tr><td><div id="barcon" name="barcon"></div></td></tr>
+		 </table>
+        </div>
+      </div>
+  </section>
+
+  <!-- Projects Section -->
+  <section id="add" class="projects-section bg-light">
+    <div class="container"  id="addsdiv">
+		<div class="row">
+        <div class="col-md-10 col-lg-8 mx-auto text-center">
+        	<img src="img/boook.PNG"><br/>
+            <div class="adddiv">
+            <span class="input input--haruki firstdiv">
+					<input class="input__field input__field--haruki" type="text" id="addtitle" />
+					<label class="input__label input__label--haruki addinput" for="addtitle">
+						<span class="input__label-content input__label-content--haruki addword">款号</span>
+					</label>
+				</span>
+                <span class="input input--haruki firstdiv rightdiv">
+					<input class="input__field input__field--haruki" type="text" id="addnumber" />
+					<label class="input__label input__label--haruki addinput" for="addnumber">
+						<span class="input__label-content input__label-content--haruki" id="addword1">总数量</span>
+					</label>
+				</span>
+                </div>
+                <div class="adddiv">
+            <span class="input input--haruki firstdiv">
+					<input class="input__field input__field--haruki" type="text" id="addpnm" />
+					<label class="input__label input__label--haruki addinput" for="addpnm">
+						<span class="input__label-content input__label-content--haruki addword">品号</span>
+					</label>
+				</span>
+                <span class="input input--haruki firstdiv rightdiv">
+					<input class="input__field input__field--haruki" type="text" id="addcustomer" />
+					<label class="input__label input__label--haruki addinput" for="addcustomer">
+						<span class="input__label-content input__label-content--haruki addword">客户</span>
+					</label>
+				</span>
+                </div>
+                 <div class="adddiv">
+            <span class="input input--haruki firstdiv">
+					<input class="input__field input__field--haruki" type="text" id="addfabric" />
+					<label class="input__label input__label--haruki addinput" for="addfabric">
+						<span class="input__label-content input__label-content--haruki addword">面料</span>
+					</label>
+				</span>
+                <span class="input input--haruki firstdiv rightdiv">
+					<input class="input__field input__field--haruki" type="date" id="adddate1" />
+					<label class="input__label input__label--haruki addinput" for="adddate1">
+						<span class="input__label-content input__label-content--haruki" id="addword">出货时间</span>
+					</label>
+				</span>
+                </div>
+                <form id="form" role="form" method="post" class="formBuilder">
+                <div class="adddiv1" id="adddiv1" style="display:none;">
+                <span class="input input--haruki addcolor secondiv">
+					<input class="input__field input__field--haruki seconddiv" type="text" id="addcolor1" />
+					<label class="input__label input__label--haruki addinput1" for="addcolor1">
+						<span class="input__label-content input__label-content--haruki addword1">颜色</span>
+					</label>
+				</span>
+                 <span class="input input--haruki addsize secondiv" id="size">
+					<input class="input__field input__field--haruki seconddiv" type="text" id="addsize1" />
+					<label class="input__label input__label--haruki addinput1" for="addsize1">
+						<span class="input__label-content input__label-content--haruki addword1">尺码</span>
+					</label>
+				</span>
+                 <span class="input input--haruki addnumber secondiv" id="number">
+					<input class="input__field input__field--haruki seconddiv" type="text" id="addnumber1" />
+					<label class="input__label input__label--haruki addinput1" for="addnumber1">
+						<span class="input__label-content input__label-content--haruki addword1">数量</span>
+					</label>
+				</span>
+                </div>
+                </form>
+                <div>
+                <p><span class="btn btn-primary js-scroll-trigger" id="addbtn" onClick="add_div()">添加颜色尺码</span><span class="btn btn-primary js-scroll-trigger" id="deletebtn" onClick="del_div()">删除颜色尺码</span></p>
+                </div>
+                <p><span class="btn btn-primary js-scroll-trigger" id="checkbtn" onClick="addform();">添加订单</span></p>
+        </div>
+        </div>
+    </div>
+  </section>
+
+  <!-- Signup Section -->
+  <section id="user" class="signup-section">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-10 col-lg-8 mx-auto text-center">
+        <img src="img/logo.png">
+        <div>
+        <p style="color:white;"><span>账号：</span><span id="logouser"></span></p>
+        <p style="color:white;"><span>密码：</span><span id="password"></span><img src="img/eye.png" class="eye" id="openeye" style="display:none;" onClick="closeeye();"><img src="img/noeye.png" id="closeeye" class="eye" onClick="openeye();"></p>
+        <p style="color:white;"><span>上一次登录时间：</span><span id="time"></span></p>
+        <p><span class="btn btn-primary js-scroll-trigger" id="logout" onClick="logout();">注销账号</span><span class="btn btn-primary js-scroll-trigger" id="alter" onClick="alter();">修改密码</span><span class="btn btn-primary js-scroll-trigger" id="quit" onClick="quit();">退出系统</span></p>
+        </div>
+	</div>
+    </div>
+    </div>
+  </section>
+
+
+
+
+ 
+
+  <!-- Footer -->
+  <footer class="bg-black small text-center text-white-50">
+    <div class="container" style="user-select:none;">
+      2019 &copy; Yongber
+    </div>
+  </footer>
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Plugin JavaScript -->
+  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+  <link href="bootstrap-table-master/dist/bootstrap-table.min.css"
+	rel="stylesheet">
+	<script src="bootstrap-table-master/dist/bootstrap-table.min.js"></script>
+<script src="bootstrap-table-master/dist/locale/bootstrap-table-zh-CN.min.js"></script>
+
+  <!-- Custom scripts for this template -->
+  <script src="js/grayscale.min.js"></script>
+  <script src="js/classie.js"></script>
+	<script>
+			(function() {
+				// trim polyfill : https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/Trim
+				if (!String.prototype.trim) {
+					(function() {
+						// Make sure we trim BOM and NBSP
+						var rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
+						String.prototype.trim = function() {
+							return this.replace(rtrim, '');
+						};
+					})();
+				}
+
+				[].slice.call( document.querySelectorAll( 'input.input__field' ) ).forEach( function( inputEl ) {
+					// in case the input is already filled..
+					if( inputEl.value.trim() !== '' ) {
+						classie.add( inputEl.parentNode, 'input--filled' );
+					}
+
+					// events:
+					inputEl.addEventListener( 'focus', onInputFocus );
+					inputEl.addEventListener( 'blur', onInputBlur );
+				} );
+
+				function onInputFocus( ev ) {
+					classie.add( ev.target.parentNode, 'input--filled' );
+				}
+
+				function onInputBlur( ev ) {
+					if( ev.target.value.trim() === '' ) {
+						classie.remove( ev.target.parentNode, 'input--filled' );
+					}
+				}
+			})();
+		</script>
+</body>
+</html>

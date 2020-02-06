@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>填写表单</title>
+<link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="distpicker.min.js"></script>
+<script src="distpicker.data.min.js"></script>
+<style>
+	label{
+		text-align:right;
+	}
+	.col-md-12{
+		margin:0;
+	}
+	body{
+		text-align:center;
+	}
+</style>
+</head>
+
+<body>
+	<div style="width:800px;height: 1000px;position: relative;">
+		<div style="width:600px;height: 800px; position: absolute;top: 50%;left: 50%;margin-top: -400px;margin-left: -300px;">
+			<form role="form" action="form_database_build.php" id="{formname}">
+				<div class="col-md-12">
+    <div class="form-group">
+        <label class="col-sm-5 control-label">多行文本：</label>
+        <div class="col-sm-7">
+            <textarea class="form-control" placeholder="请输入文本"></textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-5 control-label">单选：</label>
+        <div class="col-sm-7">
+            <label class="radio-inline">
+                <input type="radio" value="默认1" name="rad80219" checked="">默认1</label>
+            <label class="radio-inline">
+                <input type="radio" name="rad80219" value="默认2">默认2</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-5 control-label">多选：</label>
+        <div class="col-sm-7">
+            <label class="radio-inline" style="padding-left:0px;">
+                <input type="checkbox" name="默认1">默认1</label>
+            <label class="radio-inline" style="padding-left:0px;">
+                <input type="checkbox" name="默认2">默认2</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-5 control-label">下拉框：</label>
+        <div class="col-sm-7">
+            <select class="form-control"></select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-5 control-label">多选：</label>
+        <div class="col-sm-7">
+            <label class="radio-inline">
+                <input type="checkbox" name="abc">abc</label>
+            <label class="radio-inline">
+                <input type="checkbox" name="edfasdf">edfasdf</label>
+        </div>
+    </div>
+</div>
+				<input type="submit" class="btn btn-default">
+			</form>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!doctype html>
+<html>
+<head>
+
+<title>表单汇总</title>
+	<meta http-equiv="Content-Type" charset="utf-8">
+		<!-- 引入样式文件和动态动态控制 -->
+		<!-- 新 Bootstrap4 核心 CSS 文件 -->
+		<link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+		<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+		<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+		<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+		<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>	
+	<script type="text/javascript">
+	function getCookie(cname){
+		var name = cname + "=";
+		var ca = document.cookie.split(';');
+		for(var i=0; i<ca.length; i++){
+			var c = ca[i].trim();
+		if (c.indexOf(name)==0) return c.substring(name.length,c.length);
+		}
+		return "";
+	}	
+	function click_tr(){
+		var title = event.target.innerText;
+		window.location.href = "php/formdetails.php?title="+title;
+	}
+	function deleterow(){
+		var temp = window.confirm("确认删除该表单极其所有数据吗？");
+		var pid = event.target.parentNode.id;
+		if(temp==true){
+			var xhr = new XMLHttpRequest();
+			xhr.open("get","php/deleterow.php?title="+pid,true);
+			xhr.send(null);
+			xhr.onreadystatechange = function (){
+			if(xhr.readyState==4 && xhr.status==200){
+				location.href = "formlist.html";
+			}}
+			
+			
+		}
+	}
+	window.onload = function(){
+		var username = getCookie("username");
+		var xhr = new XMLHttpRequest();
+		
+		xhr.open("get","php/getformlist.php?username="+username,true);
+		xhr.send(null);
+		xhr.onreadystatechange = function (){
+			if(xhr.readyState==4 && xhr.status==200){
+				var responsetext = xhr.responseText;
+				var text = JSON.parse(responsetext);
+				var maintable = document.getElementById("tablebody");
+				for(var i =0;i<text.length;i++){
+					var json_tr = document.createElement("tr");
+					
+					var json_td = document.createElement("td");
+//					json_td.innerHTML = text[i][1];
+					var td_text = document.createTextNode(text[i][1]);
+					var json_td1 = document.createElement("td");
+//					json_td1.innerHTML = text[i][2];
+					var td_text1 = document.createTextNode(text[i][2]);
+					var json_td2 = document.createElement("td");
+//					json_td2.innerHTML = text[i][0];
+					var td_text2 = document.createTextNode(text[i][0]);
+					var json_td3 = document.createElement("td");
+					json_td3.setAttribute("id",text[i][1]);
+					json_td3.innerHTML = '<img src="images/delete.png" onclick="deleterow()" style="cursor:pointer;">';
+					//var td_text3 = document.createTextNode('<img src="img/delete.png">');
+					json_tr.className="Option";
+					json_td.setAttribute("onclick","click_tr()");
+					json_td.appendChild(td_text);
+					json_td1.appendChild(td_text1);
+					json_td2.appendChild(td_text2);
+//					json_td3.appendChild(td_text3);
+					json_tr.appendChild(json_td);
+					json_tr.appendChild(json_td1);
+					json_tr.appendChild(json_td2);
+					json_tr.appendChild(json_td3);
+					maintable.appendChild(json_tr);
+				}
+			}
+		}
+	}
+	
+</script>
+<style>
+	td{
+		font-size: 20px;
+	}	
+	.Option:hover{
+		background: #C7C7C7;
+	}
+</style>
+
+</head>
+
+<body>
+	<table class="table" id="maintable">
+		<thead>
+			<tr>
+				<th>表单名称</th>
+				<th>创建时间</th>
+				<th>填写人数</th>
+				<th>操作</th>
+			</tr>
+		</thead>
+		<tbody  id="tablebody">
+		
+		</tbody>
+	</table>
+</body>
+</html>

@@ -1,0 +1,65 @@
+#herder1{
+    width:1725px;
+    height: 120px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-around;
+}
+#herder1 h1 a img{
+    width: 200px;
+    height: 120px;
+}
+h1{
+    float: left;
+}
+.search-box{
+    margin-top: 50px;
+}
+.search-box .group,.search-box input{
+    float: left;
+}
+.search-box .group{
+    width: 65px;
+    height: 42px;
+    border: 2px solid #4169E1;
+    border-right: none;
+    position: relative;
+}
+.search-box .group>div{
+    border: 1px solid #999999;
+    height: 100%;
+    font-size: 14px;
+    line-height: 40px;
+    padding: 0 18px 0 14px;
+}
+.group .down-arrow{
+    position: absolute;
+    top: 19px;
+    border-top-color:#999999;
+}
+.group :hover .down-arrow{
+    border-top-color:#DC143C;
+}
+.search-box input[type=text]{
+    width: 360px;
+    height: 40px;
+    border-top: 2px solid #4169E1;
+    border-bottom:2px solid #4169E1 ;
+
+}
+.search-box input[type=submit]{
+    width: 65px;
+    height: 44px;
+    background: #4169E1;
+    color: #f9f9f9;
+    line-height: 40px;
+
+}
+.search-box input[type=submit]:hover{
+    background: 	#4682B4;
+}
+.clear_fix:after{
+    content: "";
+    display: block;
+    clear: both;
+}

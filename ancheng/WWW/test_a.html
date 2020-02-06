@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<script type="text/javascript">
+   window.onload = function(){
+	   //sends();
+	   //document.location = "test_b.html";
+	   SetCookie("id","你好",1);
+    SetCookie("type","你好",1);
+	   };
+
+   function SetCookie(cookieName,cookieValue,nDays) {
+  	/*当前日期*/
+  	var today = new Date();
+  	/*Cookie过期时间*/
+  	var expire = new Date();
+  	/*如果未设置nDays参数或者nDays为0，取默认值1*/
+  	if(nDays == null || nDays == 0) {
+        nDays = 1;
+    }
+    /*计算Cookie过期时间*/
+    expire.setTime(today.getTime() + 3600000 * 24 * nDays);
+    /*设置Cookie值*/
+    document.cookie = cookieName + "=" + escape(cookieValue) + ";expires=" + expire.toGMTString();
+  }
+ 
+ 
+  function sends(){
+ 
+    SetCookie("id","你好",1);
+    SetCookie("type","你好",1);
+ 
+    //document.location = "test_b.html";
+  }
+</script>
+</head>
+
+<body>
+  <div><a href="test_b.html">跳转</a></div>
+</body>
+</html>

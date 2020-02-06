@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" charset="utf-8">
+		<!-- 引入样式文件和动态动态控制 -->
+		<!-- 新 Bootstrap4 核心 CSS 文件 -->
+		<link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+		<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+		<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+
+		<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+		<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+		<link rel="stylesheet" href="assets/css/main.css">
+
+		<!-- 主要样式控制 -->
+		<title>主页</title>
+
+	</head>
+
+	<body>
+		<nav class="nav navbar-default navbar-static-top" role="navigation">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="main-page.html">表单大师</a>
+				</div>
+				<div>
+					<ul class="nav navbar-nav">
+						<li class="dropdown">
+							<a class="dropdown-toggle" href="#" data-toggle="dropdown">表单<b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li><a  href="formlist.html" target="mainFrame">表单汇总</a></li>
+								<li><a  href="abc/index2.html" target="mainFrame">新增表单</a></li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+				<ul class="nav navbar-nav navbar-right">
+					<li class="dropdown">
+						<a class="navbar-brand dropdown-toggle" data-toggle="dropdown" href="#" id="username"><span class="glyphicon glyphicon-user"></span>username</a>
+						<ul class="dropdown-menu">
+								<li><a href="user-imformation-page.html" target="mainFrame">修改密码</a></li>
+								<li><a onClick="exit()" target="mainFrame">退出登录</a></li>
+							</ul>					
+					</li>
+				</ul>
+			</div>
+		</nav>
+		
+		<div class="pageContent">
+			<iframe src="welcome-page.html" id="mainFrame" name="mainFrame" frameborder="0" width="100%" height="100%" frameBorder="0"></iframe>
+		</div>
+
+		<div class="footer">
+			<p class="text-center">2019 &copy; AoSenMan.</p>
+		</div>
+	</body>
+
+	<script type="text/javascript">
+		var cname = 'username';
+		window.onload = function(){
+			var username = getCookie(cname);
+			if(username!=''){
+				document.getElementById('username').innerHTML = username;
+			}else{
+				window.location.href = 'login-page.html';
+			}
+		}
+		function getCookie(cname){
+			var name = cname + "=";
+			var ca = document.cookie.split(';');
+			for(var i=0; i<ca.length; i++){
+				var c = ca[i].trim();
+			if (c.indexOf(name)==0) return c.substring(name.length,c.length);
+			 }
+			 return "";
+		}
+		function setCookie(cname,cvalue,exdays){
+			var d = new Date();
+			d.setTime(d.getTime()+(exdays*24*60*60*1000));
+			var expires = "expires="+d.toGMTString();
+			document.cookie = cname+"="+cvalue+"; "+expires;
+		}
+		function exit(){
+			setCookie(cname,'',-1);
+			window.location.href = 'login-page.html';
+		}
+	</script>
+</html>

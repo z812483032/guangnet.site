@@ -1,0 +1,197 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>仓库管理系统登录</title>
+        <link rel="stylesheet" href="css/style.css">
+        <script type="text/javascript" src="jquery.js"></script>
+        <script type="text/javascript">
+     window.onload = function(){
+		 document.getElementById("submit").onclick = Login;
+		 document.getElementById("reset").onclick = reset; 
+		 document.getElementById("user").onblur = checkUser;
+		 document.getElementById("psw").onblur = checkPsw;
+		 document.getElementById("reg_user").onblur = check_reg_user;
+		 document.getElementById("reg_psw").onblur = check_reg_psw;
+		 document.getElementById("reg_conPsw").onblur = check_reg_conPsw;
+		 document.getElementById("answer").onblur = check_answer;
+		 document.getElementById("question").onblur = check_question;
+		 document.getElementById("register").onclick = register;
+		 document.getElementById("clc").onclick = reg_reset;
+		 };
+	 function SetCookie(cookieName,cookieValue,nDays) {
+  	/*当前日期*/
+  	var today = new Date();
+  	/*Cookie过期时间*/
+  	var expire = new Date();
+  	/*如果未设置nDays参数或者nDays为0，取默认值1*/
+  	if(nDays == null || nDays == 0) {
+        nDays = 1;
+    }
+    /*计算Cookie过期时间*/
+    expire.setTime(today.getTime() + 3600000 * 24 * nDays);
+    /*设置Cookie值*/
+    document.cookie = cookieName + "=" + escape(cookieValue) + ";expires=" + expire.toGMTString();
+  }
+	 function reg_reset(){
+		 document.getElementById("reg_user").value ="";
+		 document.getElementById("reg_psw").value = "";
+		 document.getElementById("reg_conPsw").value = "";
+		 document.getElementById("question").value ="";
+		 document.getElementById("answer").value = "";
+		 }
+	 function check_reg_user(){
+		 var reg_user = $('#reg_user').val();
+		 if(reg_user == ""){alert('用户名不能为空！');}
+		 }
+	 function check_reg_psw(){
+		 var reg_psw = $('#reg_psw').val();
+		 if(reg_psw.length < 6 || reg_psw ==""){
+			 alert('为了确保您的账号安全，密码至少为六位！');
+			 }
+		 } 
+	 function check_reg_conPsw(){
+		 var reg_psw = $('#reg_psw').val();
+		 var reg_conPsw = $('#reg_conPsw').val();
+		 if(reg_psw != reg_conPsw){
+			 alert('密码不一致，请重新输入！');
+			 }
+		 }
+	 function check_answer(){
+		 var answer = $('#answer').val();
+		 if(answer ==""){alert('问题答案不能为空！');}
+		 }
+	 function check_question(){
+		 var question = $('#question').val();
+		 if(question ==""){alert('问题不能为空！');}
+		 }
+	 function register(){
+		 var reg_user = $('#reg_user').val();
+		 var reg_psw = $('#reg_psw').val();
+		 var reg_conPsw = $('#reg_conPsw').val();
+		 var answer = $('#answer').val();
+		 var question = $('#question').val();
+		 if(reg_user ==""){alert('用户名未填写！'); return true;}
+		 if(reg_psw.length < 6 || reg_psw ==""){alert('密码太短，长度至少为六位！'); return true;}
+		 if(reg_psw != reg_conPsw){alert('前后密码不一致,请检查！'); return true;}
+		 if(question ==""){alert('问题不能为空！'); return true;}
+		 if(answer =="") {alert('问题答案不能为空！'); return true;}
+		 var xhr = new XMLHttpRequest();
+		 xhr.open("GET","register.php?user="+reg_user+"&psw="+reg_psw+"&question="+question+"&answer="+answer,true);
+		 xhr.send(null);
+		 xhr.onreadystatechange = function(){
+		     if(xhr.readyState ==4 && xhr.status ==200){
+				 if(xhr.responseText ==0){
+					 alert('用户已注册！');
+					 }
+				 if(xhr.responseText ==1){
+					  alert('注册成功！');
+					  }
+				 }	    
+			  }
+		 }
+	 function checkUser(){
+		 var user = document.getElementById("user").value;
+		 if(user ==""){alert('用户名不能为空！');}
+		 }
+	 function checkPsw(){
+		 var psw = document.getElementById("psw").value;
+		 if(psw ==""){alert('密码不能为空！');}
+		 }
+	 function reset(){
+		 document.getElementById("user").value = "";
+		 document.getElementById("psw").value = "";
+		 }
+	 function Login(){
+		 var user = document.getElementById("user").value;
+		 var psw = document.getElementById("psw").value;
+		 if(user ==""){alert('用户名不能为空！'); return true;}
+		 if(psw ==""){alert('密码不能为空！'); return true;}
+		 var xhr = new XMLHttpRequest();
+		 xhr.open("GET","login.php?user="+user+"&psw="+psw,true);
+		 xhr.send(null);
+		 xhr.onreadystatechange = function(){
+			 if(xhr.readyState == 4 && xhr.status ==200){
+				 if(xhr.responseText == 0){
+					 alert("登录成功！");
+					 location.href = "main.html";
+					 SetCookie("user",user,1);
+					 SetCookie("psw",psw,1);
+					 }
+				 if(xhr.responseText == 1){
+					 alert("用户不存在！");
+					 }
+				 if(xhr.responseText == 2){
+					 alert("密码错误！");
+					 }
+				 }
+			 };
+		 }
+</script>
+	</head>
+	<body>
+		<script type="text/javascript" src="https://blog-static.cnblogs.com/files/yadongliang/canvas-nest.min.js"></script>
+		<canvas height="926" width="1920" style="position: fixed; top: 0px; left: 0px; z-index: -1; opacity: 0.5;" id="c_n1"></canvas>
+        <div class="content">
+        <div class="form sign-in">
+            <h2>仓库管理系统</h2>
+            <label>
+                <span>用户名</span>
+                <input type="text" id="user"/>
+            </label>
+            <label>
+                <span>密码</span>
+                <input type="password" id="psw"/>
+            </label>
+            <p class="forgot-pass"><a href="javascript:" id="forget_psw">忘记密码？</a></p>
+            <button type="button" class="submit" id="submit">登 录</button>
+            <button type="button" class="submit" id="reset">重 置</button>
+        </div>
+        <div class="sub-cont">
+            <div class="img">
+                <div class="img__text m--up">
+                    <h2>还未注册？</h2>
+                    <p>立即注册，发现大量机会！</p>
+                </div>
+                <div class="img__text m--in">
+                    <h2>已有帐号？</h2>
+                    <p>有帐号就登录吧，好久不见了！</p>
+                </div>
+                <div class="img__btn">
+                    <span class="m--up">注 册</span>
+                    <span class="m--in">登 录</span>
+                </div>
+            </div>
+            <div class="form sign-up">
+                <h2>立即注册</h2>
+                <label>
+                    <span>用户名</span>
+                    <input type="text" id="reg_user"/>
+                </label>
+                <label>
+                    <span>密码</span>
+                    <input type="password" id="reg_psw"/>
+                </label>
+                <label>
+                    <span>确认密码</span>
+                    <input type="password" id="reg_conPsw"/>
+                </label>
+                <label>
+                    <span>设置问题</span>
+                    <input type="text" id="question"/>
+                </label>
+                <label>
+                    <span>问题答案</span>
+                    <input type="text" id="answer"/>
+                </label>
+                <label style="margin-top:0px; padding-top:0px;">
+                    <span id="clc">重置注册信息</span>
+                </label>
+                <button type="button" class="submit" id="register">注 册</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+	</body>
+</html>

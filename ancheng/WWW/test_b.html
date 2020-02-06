@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<script type="text/javascript">
+
+window.onload =function(){
+	  var id = ReadCookie("id");
+   var type = ReadCookie("type");
+   document.getElementById("text").innerHTML = id+type+"没有";
+	  };
+   function ReadCookie(cookieName) {
+    var theCookie = "" + document.cookie;
+    var ind = theCookie.indexOf(cookieName);
+    if(ind==-1 || cookieName=="") {
+        return ""
+    };
+    var ind1 = theCookie.indexOf(';',ind);
+    if(ind1==-1) {
+        ind1 = theCookie.length;
+    };
+    /*读取Cookie值*/
+    return unescape(theCookie.substring(ind+cookieName.length+1,ind1));
+} 
+
+</script>
+</head>
+
+<body>
+<div>
+<p id="text">你回宿舍三生三世十里桃花</p>
+</div>
+</body>
+</html>

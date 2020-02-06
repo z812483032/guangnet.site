@@ -1,0 +1,295 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>登录界面</title>
+<link rel="stylesheet" type="text/css" href="css/normalize.css" />
+<link rel="stylesheet" type="text/css" href="jquery-ui-1.12.1/jquery-ui.css" />
+<script type="text/javascript" src="jquery-3.4.1/jquery-3.4.1.js"></script>
+<script type="text/javascript"  src="jquery-ui-1.12.1/jquery-ui.js"></script>
+<style type="text/css">
+.large-header {
+	position: relative;
+	width: 100%;
+	background: #272727;
+	overflow: hidden;
+	background-size: cover;
+	background-position: center center;
+	z-index: 1;
+}
+	.main-title {
+	user-select:none;
+	width:800px;
+	position: absolute;
+	margin: 0;
+	padding: 0;
+	color: #f9f1e9;
+	top: 20%;
+	left: 51.5%;
+	-webkit-transform: translate3d(-50%,-50%,0);
+	transform: translate3d(-50%,-50%,0);
+	text-transform: uppercase;
+	font-size: 4.2em;
+	letter-spacing: 0.4em;
+}
+    .main-title:after {
+        content: '';
+        position:absolute;
+        display:block;
+        top:0;
+        left:0;
+        height:120%;
+        width:100%;
+        background: -moz-linear-gradient(top,  rgba(39,39,39,1) 0%, rgba(39,39,39,0) 100%);
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(39,39,39,1)), color-stop(100%,rgba(39,39,39,0)));
+background: -webkit-linear-gradient(top,  rgba(39,39,39,1) 0%,rgba(39,39,39,0) 100%);
+background: -o-linear-gradient(top,  rgba(39,39,39,1) 0%,rgba(39,39,39,0) 100%);
+background: -ms-linear-gradient(top,  rgba(39,39,39,1) 0%,rgba(39,39,39,0) 100%);
+background: linear-gradient(to bottom,  rgba(39,39,39,1) 0%,rgba(39,39,39,0) 100%);
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#272727', endColorstr='#00272727',GradientType=0 );
+    }
+	#title{
+    	  text-shadow: 
+    	  	0 -1px 0 #858585,
+               0 1px 10px rgba(0,0,0,.6),
+               0 6px 1px rgba(0,0,0,.1),
+               0 0 5px rgba(0,0,0,.2),
+               0 1px 3px rgba(0,0,0,.3),
+               0 3px 5px rgba(0,0,0,.2),
+               0 7px 10px rgba(0,0,0,.25),
+               0 15px 10px rgba(0,0,0,.2),
+               0 25px 15px rgba(0,0,0,.15);
+    }
+	.main-menu{	
+	user-select:none;
+	position:absolute;
+	left:50%;
+	top:50%;
+	margin-left:-300px;
+	margin-top:-220px;
+	width:480px;
+	height:380px;
+	background-image:url(b.png);
+	border-radius:25px;
+	color:#fff;
+	text-align:center;
+	padding:65px;
+	}
+	.sign-text{
+	user-select:none;
+	outline:none;
+	margin-top:50px;
+	border:0;
+	width:300px;
+	height:50px;
+	border-radius:15px;
+	padding-left:15px;
+	font-size:18px;
+	color:#999;
+	}
+	#remeber1{margin-left:90px;  float:left; margin-top:10px;cursor:pointer;}
+	#remeber2{user-select:none; margin-top:5px; float:left; margin-left:10px;}
+	#forget{ padding-right:90px; user-select:none; margin-top:5px; float:right; cursor:pointer; text-decoration:underline; color:#CCC;}
+	.button {
+	padding-top:5px;
+	padding-bottom:5px;
+	padding-left:130px;
+	padding-right:130px;
+	position: relative;
+  	top:0;
+  	cursor: pointer;
+  	background: white;
+ 	border-radius:10px;
+ 	box-shadow: 0px 4px rgba(0, 0, 0, 0.2);
+  	color: #888;
+  	text-align: center;
+  	user-select: none;
+  	transition: all 0.2s ease;
+	line-height: 80px;
+  	width: 100%;
+ 	height: 85px;
+  	font-size: 140%;
+}
+
+	.button:hover {
+  	background: #666;
+  	box-shadow: 0px 4px #CCC;
+ 	 color: white;
+	}
+	
+	.button:active {
+  	top: 4px;
+ 	box-shadow: 0px 0px #FFF;
+	}
+	#last1{margin-top:60px;}
+	#last2{margin-top:-20px;}
+	#register{ cursor:pointer; color:#CCC; text-decoration:underline;}
+}
+</style>
+<script type="text/javascript">
+function Check(){
+		var username = document.getElementById("username");
+		var password = document.getElementById("password");
+		if(username.value == "" || password.value == "")
+		{
+			alert("账号或密码不能为空");
+		}else
+		{
+			var xhr = new XMLHttpRequest();
+			xhr.open("POST","test1.php",true);
+			xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded;charset=UTF-8");
+			xhr.send("username=" + username.value +"&password="+password.value); 
+			xhr.onreadystatechange = function(){
+				if(xhr.readyState == 4 && xhr.status == 200){
+					if(xhr.responseText == 1){
+						var xhr1 = new XMLHttpRequest();
+						xhr1.open("POST","time.php",true);
+						xhr1.setRequestHeader("Content-type","application/x-www-form-urlencoded;charset=UTF-8");
+						xhr1.send("username=" + username.value); 
+						setCookie("username",username.value,30);
+						var options = {};
+						$("#main-menu").effect("fade", options, 3000, callback);
+						$("#main-title").effect("fade", options, 3000, callback);
+						start2();
+					}else{
+						alert("账号或密码错误");
+						username.style.color = "red";
+						password.style.color = "red";
+					}
+				}
+			};
+		}
+		
+	};
+function remeber(){
+	var username = document.getElementById("username");
+	var password = document.getElementById("password");
+	var remeber = document.getElementById("remeber1");
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST","test1-2.php",true);
+	xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded;charset=UTF-8");
+	xhr.send("username=" + username.value); 
+	xhr.onreadystatechange = function(){
+				if(xhr.readyState == 4 && xhr.status == 200){
+					try{
+					var dataObj = JSON.parse(xhr.responseText);
+					}catch(e){alert(e);return;}
+					if(dataObj.remeber == 1)
+					{
+						password.value = dataObj.password;
+						remeber.checked = "true";
+					}
+				}
+			};
+}
+function update(){
+	var username = document.getElementById("username");
+	var remeber = document.getElementById("remeber1");
+	if(remeber.checked == true){
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST","test1-3.php",true);
+	xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded;charset=UTF-8");
+	xhr.send("username=" + username.value +"&remeber="+ 1); 
+	}else{
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST","test1-3.php",true);
+	xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded;charset=UTF-8");
+	xhr.send("username=" + username.value +"&remeber="+ 0); 
+	}
+}
+var timeOut = 2;
+function register(){
+	 $("#main-title").animate({
+                top:"-=125px"  
+        },3000);
+		var options = {};
+		$("#main-menu").effect("fade", options, 3000, callback );
+		start();
+}
+function start() {        
+		if(timeOut == 0){
+        setTimeout(function () {timeCount();}, 900);}
+		setTimeout(function () {timeCount();}, 1000);
+}
+function start1() {        
+		if(timeOut == 0){
+        setTimeout(function () {timeCount1();}, 900);}
+		setTimeout(function () {timeCount1();}, 1000);
+}
+function start2() {        
+		if(timeOut == 0){
+        setTimeout(function () {timeCount2();}, 900);}
+		setTimeout(function () {timeCount2();}, 1000);
+}
+function timeCount(){
+		if (timeOut > 0) {            
+            timeOut--;
+            $(".container demo-1").html(timeOut);
+            start();
+        }
+        else {
+            location.href="test2.html";
+        }
+		}
+function timeCount1(){
+		if (timeOut > 0) {            
+            timeOut--;
+            $(".container demo-1").html(timeOut);
+            start1();
+        }
+        else {
+            location.href="test3.html";
+        }
+}
+function timeCount2(){
+		if (timeOut > 0) {            
+            timeOut--;
+            $(".container demo-1").html(timeOut);
+            start2();
+        }
+        else {
+            location.href="loading.html";
+        }
+}
+function callback() {
+      setTimeout(function() {
+        $("#main-menu").removeAttr( "style" ).hide().fadeIn();
+      }, 3000);
+    };
+function forget(){
+		var options = {};
+		$("#main-menu").effect("fade", options, 3000, callback);
+		start1();
+}
+function setCookie(cname,cvalue,exdays){ 
+var d = new Date(); 
+d.setTime(d.getTime()+(exdays*24*60*60*1000)); 
+var expires = "expires="+d.toGMTString(); 
+document.cookie = cname+"="+cvalue+"; "+expires; } 
+</script>
+</head>
+
+<body id="body">
+<div class="container demo-1">
+			<div class="content">
+				<div id="large-header" class="large-header">
+					<canvas id="demo-canvas"></canvas>
+					<h1 class="main-title" id="main-title"><span id="title">服装订单管理系统</span></h1>
+                    <div class="main-menu"  id="main-menu">
+                    <form action="test1.php" method="post">
+                    <input class="sign-text" type="text"  size=15 id="username" name="username" placeholder="账号" onFocus="this.style.color='#666'"/></br>
+                    <input class="sign-text" type="password"  id="password" size=15 name="password" placeholder="密码" onFocus="this.style.color='#666'"/></br>
+                    <p><span id="forget" onClick="forget();">忘记密码</span></p>
+                    <p id="last1"><span class="button" onClick="Check();">登录</span> 
+                    </form>
+                 	<p id="last2"><span>没有账号？</span><span id="register" onClick="register();">点击注册</span>
+                    </div>
+				</div>
+			</div>
+		</div>		
+		<script src="js/TweenLite.min.js"></script>
+		<script src="js/EasePack.min.js"></script>
+		<script src="js/rAF.js"></script>
+		<script src="js/demo-1.js"></script>
+</body>
+</html>
